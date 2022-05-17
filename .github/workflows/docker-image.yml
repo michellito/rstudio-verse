@@ -2,7 +2,11 @@ name: DockerHub
 
 on:
   push:
-    branches: main 
+    branches: main
+  pull_request:
+    branches: main
+  schedule:
+    - cron: '55 * * * *'
     
 jobs:
   main:
