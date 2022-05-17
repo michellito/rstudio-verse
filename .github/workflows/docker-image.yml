@@ -1,0 +1,40 @@
+name: DockerHub
+
+on:
+  push:
+    branches: main 
+    
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: checkout
+        uses: actions/checkout@v2
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      -
+        name: Build and push latest
+        id: docker_build_latest
+        uses: docker/build-push-action@v2
+        with:
+          context: latest
+          file: latest/Dockerfile
+          push: true
+          tags: cyversevice/rstudio-verse:latest
+      -
+        name: Build and Push v4.2.0
+        id: docker_build_four_two_zero
+        uses: docker/build-push-action@v2
+        with:
+          context: 4.2.0
+          file: latest/Dockerfile
+          push: true
+          tags: cyversevice/rstudio-verse:4.2.0    
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
